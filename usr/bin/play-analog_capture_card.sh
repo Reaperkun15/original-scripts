@@ -1,29 +1,28 @@
 #!/usr/bin/env bash
 
-TARGET_CAPTURE_DEV="/dev/video0"
-TARGET_INPUT="1"
+# defaut target device
+DEVICE="/dev/video0"
 
-# 1. ビデオ入力（Composite1）
-v4l2-ctl -d $TARGET_CAPTURE_DEV --set-input="$TARGET_INPUT"
+# Default target source
+TARGET_INPUT="0"
 
-# 2. ビデオ標準（NTSC-M）
-v4l2-ctl -d $TARGET_CAPTURE_DEV --set-standard=0x00001000   # NTSC-M のビットマスク
-#v4l2-ctl -d $DEV --set-standard=ntsc
+# additional mpv options
+MPV_ADD_OPTION=''
 
-# 3. フォーマット（720x480, YU12, Interlaced）
-v4l2-ctl -d $TARGET_CAPTURE_DEV --set-fmt-video=width=720,height=480,pixelformat=YU12,field=interlaced
+echo "Setting up device"
+if [ -e /tmp/v4l2-setup ]; then
+    echo "Warning: It appears to have already been set up. Skipping"
+else
+    v4l2-ctl -d ${DEVICE} --set-standard=ntsc --set-fmt-video=width=720,height=480,pixelformat=UYVY --set-parm=30000/1001
+    v4l2-ctl -d ${DEVICE}  -i ${TARGET_INPUT}
+    touch /tmp/v4l2-setup
+fi
 
-# 4. フレームレート（29.97fps = 30000/1001）
-v4l2-ctl -d $TARGET_CAPTURE_DEV --set-parm=30000/1001
-
-# 5. クロップ（必要なら。デフォルトで 768x480 → 720x480 にトリミング）
-v4l2-ctl -d $TARGET_CAPTURE_DEV --set-crop=left=128,top=46,width=768,height=480
-
-# 6. ターゲットを再生
-mpv av://v4l2:${TARGET_CAPTURE_DEV} \
+echo "Starting playback"
+mpv av://v4l2:${DEVICE} \
     --no-cache \
     --profile=low-latency \
     --untimed \
-    --video-sync=display-resample \
-    --hwdec=auto-safe \
-    --stream-lavf-o=fflags=nobuffer
+    ${MPV_ADD_OPTION}
+
+exit 0
