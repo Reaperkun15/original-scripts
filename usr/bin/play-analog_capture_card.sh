@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# LinuxでConexant Bt878/CX8XX, Philips SAA713X等のソフトウェアエンコード方式のアナログNTSCキャプチャカードを再生できるスクリプト
+# !! 注意 ""
+# 1. v4l-utilsとmpvが必要
+# 2. ハードウェアエンコードカードでは動作しない
 
 # defaut target device
 DEVICE="/dev/video0"
@@ -7,7 +11,7 @@ DEVICE="/dev/video0"
 TARGET_INPUT="0"
 
 # additional mpv options
-MPV_ADD_OPTION=''
+MPV_ADD_OPTION='--video-aspect-override=4:3'
 
 echo "Setting up device"
 if [ -e /tmp/v4l2-setup ]; then
