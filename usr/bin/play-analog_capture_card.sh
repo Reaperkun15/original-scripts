@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# LinuxでConexant Bt878/CX8XX, Philips SAA713X等のソフトウェアエンコード方式のアナログNTSCキャプチャカードを再生できるスクリプト
+# LinuxでConexant Bt878/CX8XX, Philips SAA713X等のソフトウェアエンコード方式のアナログNTSCキャプチャカードをキレイに遅延を抑えて自動で再生できるスクリプト
 # !! 注意 ""
 # 1. v4l-utilsとmpvが必要
 # 2. ハードウェアエンコードカードでは動作しない
